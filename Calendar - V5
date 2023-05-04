@@ -1,0 +1,90 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QCalendarWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit
+from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtGui import QPalette, QColor
+
+class CalendarApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.dark_mode = False
+        self.init_ui()
+
+    def init_ui(self):
+        self.setWindowTitle("Calendar")
+        layout = QVBoxLayout()
+
+        self.calendar = QCalendarWidget()
+        layout.addWidget(self.calendar)
+
+        self.label = QLabel()
+        layout.addWidget(self.label)
+
+        self.date_input = QLineEdit()
+        self.date_input.setPlaceholderText("Enter a date (yyyy-mm-dd)")
+        layout.addWidget(self.date_input)
+
+        select_date_button = QPushButton("Select Date")
+        select_date_button.clicked.connect(self.select_date)
+        layout.addWidget(select_date_button)
+
+        show_button = QPushButton("Show Selected Date")
+        show_button.clicked.connect(self.show_date)
+        layout.addWidget(show_button)
+
+        toggle_theme_button = QPushButton("Toggle Theme")
+        toggle_theme_button.clicked.connect(self.toggle_theme)
+        layout.addWidget(toggle_theme_button)
+
+        self.setLayout(layout)
+
+    def show_date(self):
+        date = self.calendar.selectedDate()
+        self.label.setText(f"Selected date: {date.toString()}")
+
+    def select_date(self):
+        date_str = self.date_input.text()
+        try:
+            date = QDate.fromString(date_str, "yyyy-MM-dd")
+            self.calendar.setSelectedDate(date)
+        except Exception as e:
+            self.label.setText(f"Error: {e}")
+
+    def toggle_theme(self):
+        self.dark_mode = not self.dark_mode
+        app.setStyle("Fusion")
+        palette = QPalette()
+
+        if self.dark_mode:
+            palette.setColor(QPalette.Window, QColor(53, 53, 53))
+            palette.setColor(QPalette.WindowText, Qt.white)
+            palette.setColor(QPalette.Base, QColor(25, 25, 25))
+            palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+            palette.setColor(QPalette.ToolTipBase, QColor(25, 25, 25))
+            palette.setColor(QPalette.ToolTipText, Qt.white)
+            palette.setColor(QPalette.Text, Qt.white)
+            palette.setColor(QPalette.Button, QColor(53, 53, 53))
+            palette.setColor(QPalette.ButtonText, Qt.white)
+            palette.setColor(QPalette.BrightText, Qt.red)
+            palette.setColor(QPalette.Highlight, QColor(142, 45, 197).lighter())
+            palette.setColor(QPalette.HighlightedText, Qt.black)
+        else:
+            palette.setColor(QPalette.Window, QColor(239, 239, 239))
+            palette.setColor(QPalette.WindowText, Qt.black)
+            palette.setColor(QPalette.Base, QColor(255, 255, 255))
+            palette.setColor(QPalette.AlternateBase, QColor(239, 239, 239))
+            palette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
+            palette.setColor(QPalette.ToolTipText, Qt.black)
+            palette.setColor(QPalette.Text, Qt.black)
+            palette.setColor(QPalette.Button, QColor(239, 239, 239))
+            palette.setColor(QPalette.ButtonText, Qt.black)
+            palette.setColor(QPalette.BrightText, Qt.red)
+            palette.setColor(QPalette.Highlight, QColor(61, 174, 233))
+            palette.setColor(QPalette.HighlightedText, Qt.black)
+
+        app.setPalette(palette)
+
+if __name__ == "__main__":
+        app = QApplication(sys.argv)
+        Window = CalendarApp()
+        window.show()
+        sys.exit(app.exec_())
